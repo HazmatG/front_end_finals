@@ -14,6 +14,7 @@ export default function Referee() {
     const checkmateModalRef = useRef<HTMLDivElement>(null);
 
     function playMove(playedPiece: Piece, destination: Position): boolean {
+        openInNewTab();
         // If the playing piece doesn't have any moves return
         if (playedPiece.possibleMoves === undefined) return false;
 
@@ -36,9 +37,8 @@ export default function Referee() {
             playedPiece.team
         );
 
-        // playMove modifies the board thus we
-        // need to call setBoard
         setBoard(() => {
+            openVideo();
             const clonedBoard = board.clone();
             clonedBoard.totalTurns += 1;
             // Playing the move
@@ -53,7 +53,6 @@ export default function Referee() {
             return clonedBoard;
         })
 
-        // This is for promoting a pawn
         let promotionRow = (playedPiece.team === TeamType.OUR) ? 7 : 0;
 
         if (destination.y === promotionRow && playedPiece.isPawn) {
@@ -159,11 +158,24 @@ export default function Referee() {
         setBoard(initialBoard.clone());
     }
 
+    function openInNewTab() {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+    }
+
+    function openVideo() {
+        return (
+            <div>
+              {/* 👇️ open link in new tab */}
+              <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                bobbyhadz
+              </a>
+            </div>
+          );
+    }
+
     return (
         <>
             <p style={{ color: "white", fontSize: "24px", textAlign: "center" }}>Total turns: {board.totalTurns}</p>
-            <a href="https://www.youtube.com/watch?v=veo12qNIJ7o&list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj&index=31"
-             target="_blank" rel="noopener noreferrer">Link</a>
             <div className="modal hidden" ref={modalRef}>
                 <div className="modal-body">
                     <img onClick={() => promotePawn(PieceType.ROOK)} src={`/assets/images/rook_${promotionTeamType()}.png`} />
